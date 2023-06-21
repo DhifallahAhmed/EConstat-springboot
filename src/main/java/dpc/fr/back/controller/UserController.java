@@ -6,14 +6,24 @@ import dpc.fr.back.entity.Role;
 import dpc.fr.back.entity.UserEntity;
 import dpc.fr.back.repository.RoleRepository;
 import dpc.fr.back.repository.UserRepository;
+import dpc.fr.back.service.EmailSenderService;
+import dpc.fr.back.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.naming.Context;
+import javax.naming.Name;
+import javax.naming.NamingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("users")
@@ -24,6 +34,8 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PasswordResetService passwordResetService;
     @PostMapping("add")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername()))
@@ -100,15 +112,54 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        // Verify the user's current password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid current password");
         }
 
-        // Update the user's password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 
         return ResponseEntity.ok("Password changed successfully");
     }
+    @PutMapping("/{email}/forgot")
+    public ResponseEntity<String> forgotPassword(@PathVariable String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?";
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            password.append(randomChar);
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+        senderService.sendSimpleEmail(email,"Reset password","Your new password is "+ password.toString()+" you can change it anytime you want!");
+        return ResponseEntity.ok("Password changed successfully");
+    }
+    @Autowired
+    private EmailSenderService senderService;
+    @PostMapping("/verif/{email}")
+    public ResponseEntity<String> sendMailVerification(@PathVariable String email)
+    {
+        System.out.println(email);
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (user != null) {
+            user.setVerified(Boolean.TRUE);
+            userRepository.save(user);
+            return ResponseEntity.ok("User verified successfully");
+        }
+        else return ResponseEntity.internalServerError().body("Error");
+    }
+
 }

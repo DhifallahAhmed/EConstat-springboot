@@ -1,4 +1,4 @@
-package dpc.fr.back;
+package dpc.fr.back.service;
 
 import dpc.fr.back.entity.PasswordResetToken;
 import dpc.fr.back.entity.UserEntity;
@@ -7,6 +7,8 @@ import dpc.fr.back.repository.UserRepository;
 import dpc.fr.back.security.JWTGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 @Service
 public class PasswordResetService {
@@ -52,6 +54,17 @@ public class PasswordResetService {
 
     private void sendEmail(String email, String token) {
         // Implement your email sending logic here
+    }
+
+    public static String alphaNumericString(int len) {
+        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random rnd = new Random();
+
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        }
+        return sb.toString();
     }
 }
 
