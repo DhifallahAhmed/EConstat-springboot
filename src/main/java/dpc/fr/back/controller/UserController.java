@@ -36,6 +36,8 @@ public class UserController {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordResetService passwordResetService;
+    @Autowired
+    private EmailSenderService senderService;
     @PostMapping("add")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername()))
@@ -144,22 +146,43 @@ public class UserController {
         senderService.sendSimpleEmail(email,"Reset password","Your new password is "+ password.toString()+" you can change it anytime you want!");
         return ResponseEntity.ok("Password changed successfully");
     }
-    @Autowired
-    private EmailSenderService senderService;
+
+
+
+
     @PostMapping("/verif/{email}")
-    public ResponseEntity<String> sendMailVerification(@PathVariable String email)
+    public ResponseEntity<String> verification(@PathVariable String email,@RequestBody int otp)
     {
         System.out.println(email);
+       // int min = 1000;  // Minimum OTP value
+     //   int max = 9999;  // Maximum OTP value
+      //  Random random = new Random();
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        if (user != null) {
+        if (user != null && otp==user.getOtp()) {
             user.setVerified(Boolean.TRUE);
             userRepository.save(user);
             return ResponseEntity.ok("User verified successfully");
         }
         else return ResponseEntity.internalServerError().body("Error");
+    }
+    @PostMapping ("sendotp/{email}")
+    public ResponseEntity<String> sendotp(@PathVariable String email) {
+        UserEntity user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        int min = 1000;  // Minimum OTP value
+        int max = 9999;  // Maximum OTP value
+        Random random = new Random();
+        int sentotp = random.nextInt(max - min + 1) + min;
+        user.setOtp(sentotp);
+        userRepository.save(user);
+        senderService.sendSimpleEmail(email,"OTP","Your OTP is "+ sentotp +" you can verify your account by typing it in the link below");
+        return ResponseEntity.ok("OTP sent successfully");
     }
 
 }

@@ -49,14 +49,11 @@ public class UserEntity {
 
     private Boolean verified = false;
 
-    private Integer otp = 8989;
+    private int otp = 8989;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
-
-    private String token;
-
 }
