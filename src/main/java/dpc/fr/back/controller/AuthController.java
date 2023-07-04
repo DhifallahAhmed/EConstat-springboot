@@ -46,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsername(),
@@ -54,12 +54,17 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
         UserEntity user = userRepository.findByUsername(loginDto.getUsername()).orElse(null);
-        String fullname = user != null ? user.getFullName() : null;
 
-        AuthResponseDTO response = new AuthResponseDTO(fullname, token);
-
-        return ResponseEntity.ok(response);
+        if (user != null && user.getVerified()) { // Check if the user account is verified
+            String fullname = user.getFullName();
+            AuthResponseDTO response = new AuthResponseDTO(fullname, token);
+            return ResponseEntity.ok(response);
+        } else {
+            // User account is not verified, return appropriate response
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
+
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {

@@ -1,9 +1,7 @@
 package dpc.fr.back.entity;
 
 import lombok.*;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ import java.util.List;
 @Data
 @Table(name = "users")
 @Entity
-public class UserEntity {
+public class UserEntity  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;

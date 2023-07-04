@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/users/{{email}}/forgot").permitAll()
                 .antMatchers("/users/add").hasAuthority("ADMIN")
                 .antMatchers("/users/delete/**").hasAuthority("ADMIN")
                 .antMatchers("/users/get").hasAuthority("ADMIN")
