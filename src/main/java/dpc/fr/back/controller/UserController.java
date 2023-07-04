@@ -9,20 +9,15 @@ import dpc.fr.back.repository.UserRepository;
 import dpc.fr.back.service.EmailSenderService;
 import dpc.fr.back.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
-import javax.naming.Context;
-import javax.naming.Name;
-import javax.naming.NamingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @RestController
@@ -183,6 +178,16 @@ public class UserController {
         userRepository.save(user);
         senderService.sendSimpleEmail(email,"OTP","Your OTP is "+ sentotp +" you can verify your account by typing it in the link below");
         return ResponseEntity.ok("OTP sent successfully");
+    }
+    @GetMapping("getbyusername/{username}")
+    public Optional<UserEntity> getbyusername (@PathVariable  String username){
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        if(userEntity.isPresent()){
+            ResponseEntity.ok();
+        }
+        else ResponseEntity.notFound();
+
+        return userEntity;
     }
 
 }
