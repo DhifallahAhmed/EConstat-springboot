@@ -1,5 +1,6 @@
 package dpc.fr.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,8 @@ public class Car {
     private UserEntity owner;
     @OneToMany(mappedBy = "car",cascade = CascadeType.ALL)
     private List<CarDamage> carDamages;
-    @OneToMany(mappedBy = "carr",cascade = CascadeType.ALL)
-    private List<Insurance> insurances;
+    @JsonIgnore
+    @OneToOne(mappedBy = "carr",cascade = CascadeType.ALL)
+    private Insurance insurance;
     private String carImage;
 }

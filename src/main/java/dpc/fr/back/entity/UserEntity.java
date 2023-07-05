@@ -1,5 +1,6 @@
 package dpc.fr.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 
@@ -52,6 +53,7 @@ public class UserEntity  {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 }

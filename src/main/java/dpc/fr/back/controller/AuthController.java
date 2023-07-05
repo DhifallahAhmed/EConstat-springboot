@@ -71,7 +71,6 @@ public class AuthController {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
-
         UserEntity user = new UserEntity();
         user.setUsername(registerDto.getUsername());
         user.setFullName(registerDto.getFullName());
@@ -82,12 +81,8 @@ public class AuthController {
         user.setDriverLicense(registerDto.getDriverLicense());
         Role roles = roleRepository.findByName("USER").get();
         user.setRoles(Collections.singletonList(roles));
-
         user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
-
-
         userRepository.save(user);
-
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package dpc.fr.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,8 @@ public class Insurance {
     @Column(nullable = false)
     private String image;
 
-    @ManyToOne
+    @JsonIgnore
+    @OneToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car carr;
 }
