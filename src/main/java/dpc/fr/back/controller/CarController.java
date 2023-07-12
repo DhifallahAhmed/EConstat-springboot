@@ -1,6 +1,7 @@
 package dpc.fr.back.controller;
 
 import dpc.fr.back.entity.Car;
+import dpc.fr.back.entity.Insurance;
 import dpc.fr.back.entity.UserEntity;
 import dpc.fr.back.repository.CarRepository;
 
@@ -29,12 +30,12 @@ public class CarController{
         return cars;
     }
     @GetMapping("get/{numSerie}")
-    public String findCarBynumSerie(@PathVariable String numSerie) {
+    public Insurance findCarBynumSerie(@PathVariable String numSerie) {
        Car car = carRepository.findByNumSerie(numSerie);
         if (car == null) {
             return null;
         }
-        return car.getOwner().toString();
+        return car.getInsurance();
     }
 
     @PostMapping("{userId}")

@@ -36,6 +36,7 @@ public class Car {
 
     @ManyToOne
     private UserEntity owner;
+    @JsonIgnore
     @OneToMany(mappedBy = "car",cascade = CascadeType.ALL)
     private List<CarDamage> carDamages;
     @JsonIgnore

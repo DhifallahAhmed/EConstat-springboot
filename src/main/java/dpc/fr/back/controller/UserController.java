@@ -1,6 +1,7 @@
 package dpc.fr.back.controller;
 
 import dpc.fr.back.dto.RegisterDto;
+import dpc.fr.back.entity.Car;
 import dpc.fr.back.entity.ChangePasswordRequest;
 import dpc.fr.back.entity.Role;
 import dpc.fr.back.entity.UserEntity;
@@ -76,12 +77,12 @@ public class UserController {
 
     }
     @GetMapping("get")
-    public List<UserEntity> findAllcars() {
+    public List<UserEntity> findAllusers() {
         List<UserEntity> users = userRepository.findAll();
         return users;
     }
     @GetMapping("get/{id}")
-    public UserEntity findAllcars(int id) {
+    public UserEntity findUserByid(@PathVariable int id) {
         UserEntity user = userRepository.findById(id).orElse(null);
         return user;
     }
@@ -189,5 +190,14 @@ public class UserController {
 
         return userEntity;
     }
-
+    @GetMapping("getCars/{userId}")
+    public List<Car> findAllCars(@PathVariable int userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            return user.getCars();
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
 }
