@@ -53,11 +53,11 @@ public class InsuranceController {
                 insurance.setName(name);
                 insurance.setNumContrat(numContrat);
                 insurance.setAgency(agency);
-                insurance.setImage("http://10.0.2.2:3000/imgInsurance/" + name + ".png");
                 insurance.setValidityFrom(validityFrom);
                 insurance.setValidityTo(validityTo);
-                insurance.setCarr(car);
-
+                insurance.setCar(car);
+                car.setInsurance(insurance);
+                carRepository.save(car);
                 Insurance savedInsurance = insuranceRepository.save(insurance);
 
                 return ResponseEntity.ok(new InsuranceDTO());

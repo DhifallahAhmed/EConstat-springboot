@@ -40,7 +40,8 @@ public class Car {
     @OneToMany(mappedBy = "car",cascade = CascadeType.ALL)
     private List<CarDamage> carDamages;
     @JsonIgnore
-    @OneToOne(mappedBy = "carr",cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "insurance_id")
     private Insurance insurance;
     private String carImage;
 }

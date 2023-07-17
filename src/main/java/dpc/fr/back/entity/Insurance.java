@@ -1,10 +1,7 @@
 package dpc.fr.back.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Insurance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +32,10 @@ public class Insurance {
     @Column(nullable = false)
     private Date validityTo;
 
-    @Column(nullable = false)
-    private String image;
-
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "car_id", nullable = false)
-    private Car carr;
+    private Car car;
+
+
 }

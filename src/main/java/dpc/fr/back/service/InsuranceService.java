@@ -39,7 +39,6 @@ public class InsuranceService {
         insurance.setName(updatedInsurance.getName());
         insurance.setNumContrat(updatedInsurance.getNumContrat());
         insurance.setAgency(updatedInsurance.getAgency());
-        insurance.setImage(updatedInsurance.getImage());
         insurance.setValidityFrom(updatedInsurance.getValidityFrom());
         insurance.setValidityTo(updatedInsurance.getValidityTo());
         return insuranceRepository.save(insurance);
