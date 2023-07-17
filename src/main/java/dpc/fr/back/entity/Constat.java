@@ -1,7 +1,16 @@
 package dpc.fr.back.entity;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Constat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

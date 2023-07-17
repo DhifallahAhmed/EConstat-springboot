@@ -71,29 +71,18 @@ public class CarController{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
     }
-    @PostMapping("/removeCar/{userId}")
-    public ResponseEntity<String> removeCar(@RequestBody String numSerie, @PathVariable int userId) {
+    @PostMapping("/removeCar/{idCar}")
+    public ResponseEntity<String> removeCar(@PathVariable int idCar) {
         try {
-            UserEntity user = userRepository.findById(userId).orElse(null);
-            if (user != null) {
-                List<Car> cars = user.getCars();
-                Car carToRemove = null;
-                for (Car car : cars) {
-                    if (car.getNumSerie().equals(numSerie)) {
-                        carToRemove = car;
-                        break;
-                    }
-                }
-                if (carToRemove != null) {
-                    cars.remove(carToRemove);
-                    userRepository.save(user);
-                    return ResponseEntity.ok("Car deleted from user's list");
+            Optional<Car> carOptional = carRepository.findById(idCar);
+            if (carOptional.isPresent()) {
+                Car car = carOptional.get();
+                carRepository.delete(car);
+                return ResponseEntity.ok("Car deleted from user's list");
                 } else {
                     return ResponseEntity.badRequest().body("Car not found in user's list");
                 }
-            } else {
-                return ResponseEntity.badRequest().body("User not found");
-            }
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
         }
