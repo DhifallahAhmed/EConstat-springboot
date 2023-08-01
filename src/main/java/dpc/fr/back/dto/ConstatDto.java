@@ -1,14 +1,14 @@
 package dpc.fr.back.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
-
+@Builder
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ConstatDto {
     private int userAId;
     private int carAId;

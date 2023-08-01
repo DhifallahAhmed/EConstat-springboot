@@ -104,4 +104,27 @@ public class InsuranceServiceTest {
         Assertions.assertThat(insurances).isNotNull();
         Assertions.assertThat(insurances.size()).isEqualTo(2);
     }
+    @Test
+    public void updateInsuranceTest(){
+        Insurance insurance = Insurance.builder()
+                .insuranceId(1)
+                .agency("Star")
+                .name("test")
+                .validityTo(new Date())
+                .validityFrom(new Date())
+                .numContrat("555")
+                .build();
+        // given - precondition or setup
+         given(insuranceRepository.findById(1)).willReturn(Optional.ofNullable(insurance));
+        given(insuranceRepository.save(insurance)).willReturn(insurance);
+        insurance.setNumContrat("123");
+        insurance.setName("Updated");
+        // when -  action or the behaviour that we are going test
+        Insurance updatedInsurance = insuranceService.updateInsurance(1,insurance);
+
+        // then - verify the output
+        Assertions.assertThat(updatedInsurance.getNumContrat()).isEqualTo("123");
+        Assertions.assertThat(updatedInsurance.getName()).isEqualTo("Updated");
+
+    }
 }

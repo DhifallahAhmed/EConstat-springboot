@@ -41,31 +41,21 @@ public class CarController{
     @PostMapping("{userId}")
     public ResponseEntity<?> addNewCar(@PathVariable int userId, @RequestBody Car car) {
         try {
-            // Perform validation checks on the car object
             if (car.getCarBrand() == null || car.getType() == null || car.getNumSerie() == null ||
                     car.getFiscalPower() == 0 || car.getNumImmatriculation() == null) {
                 return ResponseEntity.badRequest().body("All fields are required");
             }
-
-            // Check if the user exists
             Optional<UserEntity> optionalUser = userRepository.findById(userId);
             if (!optionalUser.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             UserEntity user = optionalUser.get();
-
-            // Check if the car with the same serial number already exists
             Car existingCar = carRepository.findByNumSerie(car.getNumSerie());
             if (existingCar != null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Car already exists");
             }
-
-            // Set the owner of the car
             car.setOwner(user);
-
-            // Save the car to the database
-            Car savedCar = carRepository.save(car);
-
+            carRepository.save(car);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Car is added");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
@@ -75,7 +65,8 @@ public class CarController{
     public ResponseEntity<String> removeCar(@PathVariable int idCar) {
         try {
             Optional<Car> carOptional = carRepository.findById(idCar);
-            if (carOptional.isPresent()) {
+            if (carOptional.isPresent()
+            ) {
                 Car car = carOptional.get();
                 carRepository.delete(car);
                 return ResponseEntity.ok("Car deleted from user's list");

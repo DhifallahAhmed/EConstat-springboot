@@ -58,7 +58,7 @@ public class InsuranceController {
                 insurance.setCar(car);
                 car.setInsurance(insurance);
                 carRepository.save(car);
-                Insurance savedInsurance = insuranceRepository.save(insurance);
+                insuranceRepository.save(insurance);
 
                 return ResponseEntity.ok(new InsuranceDTO());
             } catch (Exception e) {
@@ -102,6 +102,4 @@ public class InsuranceController {
     }
 
 }
-
-
 

@@ -8,7 +8,6 @@ import dpc.fr.back.entity.UserEntity;
 import dpc.fr.back.repository.RoleRepository;
 import dpc.fr.back.repository.UserRepository;
 import dpc.fr.back.service.EmailSenderService;
-import dpc.fr.back.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,33 +30,31 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private PasswordResetService passwordResetService;
-    @Autowired
     private EmailSenderService senderService;
-    @PostMapping("add")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-        if (userRepository.existsByUsername(registerDto.getUsername()))
-        {
-            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
-        }
-        UserEntity user = new UserEntity();
-        user.setUsername(registerDto.getUsername());
-        user.setFullName(registerDto.getFullName());
-        user.setAddress(registerDto.getAddress());
-        user.setEmail(registerDto.getEmail());
-        user.setDeliveredOn(registerDto.getDeliveredOn());
-        user.setNumber(registerDto.getNumber());
-        user.setDriverLicense(registerDto.getDriverLicense());
-
-        user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
-
-        Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
-
-        userRepository.save(user);
-
-        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
-    }
+//    @PostMapping("add")
+//    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+//        if (userRepository.existsByUsername(registerDto.getUsername()))
+//        {
+//            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
+//        }
+//        UserEntity user = new UserEntity();
+//        user.setUsername(registerDto.getUsername());
+//        user.setFullName(registerDto.getFullName());
+//        user.setAddress(registerDto.getAddress());
+//        user.setEmail(registerDto.getEmail());
+//        user.setDeliveredOn(registerDto.getDeliveredOn());
+//        user.setNumber(registerDto.getNumber());
+//        user.setDriverLicense(registerDto.getDriverLicense());
+//
+//        user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
+//
+//        Role roles = roleRepository.findByName("USER").get();
+//        user.setRoles(Collections.singletonList(roles));
+//
+//        userRepository.save(user);
+//
+//        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
+//    }
     @DeleteMapping("{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable int userId) {
 
@@ -177,7 +174,7 @@ public class UserController {
         int sentotp = random.nextInt(max - min + 1) + min;
         user.setOtp(sentotp);
         userRepository.save(user);
-        senderService.sendSimpleEmail(email,"OTP","Your OTP is "+ sentotp +" you can verify your account by typing it in the link below");
+        senderService.sendSimpleEmail(email,"Verification Code","Your verification code is "+ sentotp +" you can verify your account by typing this code in the proper field");
         return ResponseEntity.ok("OTP sent successfully");
     }
     @GetMapping("getbyusername/{username}")
